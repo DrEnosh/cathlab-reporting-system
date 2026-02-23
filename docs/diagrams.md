@@ -15,7 +15,7 @@ flowchart TD
     classDef highlight fill:#C07A00,stroke:#8B5A00,color:#fff
     classDef success fill:#0F8A5F,stroke:#0A6042,color:#fff
 
-    Start([Technologist Logs In]) ::: primary
+    Start([Technologist Logs In]):::primary
     Home[Dashboard / Home Screen]
     Action{Choose Action}
     
@@ -24,13 +24,13 @@ flowchart TD
     Home --> Action
     
     %% New Report Path
-    Action -->|Create New| SelectProc[Select Procedure Type] ::: secondary
+    Action -->|Create New| SelectProc[Select Procedure Type]:::secondary
     SelectProc -->|CAG / PCI / RHC / TPM| LoadTemp[Dynamic Template Loads]
     LoadTemp --> FillData[Enter Patient & Procedural Data]
     
     %% Validation Loop
     FillData --> Validate{Form Validation Engine}
-    Validate -->|Missing Fields / Errors| ErrorState[Highlight Errors & Warning Toasts] ::: highlight
+    Validate -->|Missing Fields / Errors| ErrorState[Highlight Errors & Warning Toasts]:::highlight
     ErrorState --> FillData
     
     Validate -->|All Mandatory Fields Filled| SmartAnalysis[Smart Feature Auto-Analysis]
@@ -39,7 +39,7 @@ flowchart TD
     
     %% Finalization
     Signature --> Submit[Submit Final Report]
-    Submit --> Store[(Saved to LocalStore)] ::: success
+    Submit --> Store[(Saved to LocalStore)]:::success
     Store --> PDF[Generate Printable PDF]
     
     %% Other Paths
