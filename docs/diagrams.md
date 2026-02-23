@@ -58,49 +58,55 @@ This fishbone diagram illustrates the contributing components that enable the co
 
 ```mermaid
 flowchart RL
-    %% Define Goal
-    Goal(Standardized Digital<br/>Procedure Report)
-    class Goal primary
-    
-    %% The main spine
+    %% Define Goal (The Problem or Effect)
+    Goal(Problem or EFFECT)
+    class Goal effect
+
+    %% The Main Spine
     Goal --- Spine1(( ))
     Spine1 --- Spine2(( ))
-    Spine2 --- Spine3(( ))
     
     style Spine1 fill:none,stroke:none
     style Spine2 fill:none,stroke:none
-    style Spine3 fill:none,stroke:none
 
-    %% Categories (Ribs)
-    Templates[Dynamic Templates] --> Spine1
-    SmartFeatures[Smart Intelligence] --> Spine2
-    UX[User Experience] --> Spine3
-    
-    DataStore[Data & Export] --> Spine1
-    Validation[Clinical Validation] --> Spine2
-    Security[Identity / Security] --> Spine3
+    %% Top Categories (MAN, MACHINE)
+    Man[MAN] --> Spine1
+    Machine[MACHINE] --> Spine2
 
-    %% Detailed Bones (Sub-causes)
-    CAG(CAG Cor. Anatomy) -.-> Templates
-    PCI(PCI Lesion Data) -.-> Templates
-    RHC(RHC Hemodynamics) -.-> Templates
-    
-    AutoSug(Auto-Impressions) -.-> SmartFeatures
-    PVRCalc(Auto PVR Calculator) -.-> SmartFeatures
-    
-    DarkMode(Dark/Light Modes) -.-> UX
-    Responsive(Tablet/Desktop Ready) -.-> UX
-    
-    PDF(jsPDF Integration) -.-> DataStore
-    Local(LocalStorage DB) -.-> DataStore
-    
-    Mandatory(Mandatory Radiation) -.-> Validation
-    Abnormal(Abnormal Value Flags) -.-> Validation
-    
-    Sig(Digital Signature Pad) -.-> Security
-    Draft(Auto-save Drafts) -.-> Security
+    %% Bottom Categories (MATERIAL, METHOD)
+    Material[MATERIAL] --> Spine1
+    Method[METHOD] --> Spine2
 
-    classDef primary fill:#0D6EBF,stroke:#094D87,color:#fff,font-weight:bold
+    %% Sub-causes for MAN
+    CauseMan1(Cause) -.-> Man
+    CauseMan2(Cause) -.-> Man
+    CauseMan3(Cause) -.-> Man
+    SubCauseMan1(Sub-Cause) -.-> CauseMan2
+
+    %% Sub-causes for MACHINE
+    CauseMach1(Cause) -.-> Machine
+    CauseMach2(Cause) -.-> Machine
+    CauseMach3(Cause) -.-> Machine
+    SubCauseMach1(Sub-Cause) -.-> CauseMach2
+
+    %% Sub-causes for MATERIAL
+    CauseMat1(Cause) -.-> Material
+    CauseMat2(Cause) -.-> Material
+    CauseMat3(Cause) -.-> Material
+    SubCauseMat1(Sub-Cause) -.-> CauseMat2
+
+    %% Sub-causes for METHOD
+    CauseMeth1(Cause) -.-> Method
+    CauseMeth2(Cause) -.-> Method
+    CauseMeth3(Cause) -.-> Method
+    SubCauseMeth1(Sub-Cause) -.-> CauseMeth2
+
+    %% Styles
+    classDef effect fill:#FFFF99,stroke:#FF0000,stroke-width:3px,color:#FF0000,font-weight:bold
+    style Man fill:#FFFF99,stroke:#000080,stroke-width:2px,color:#000080,font-weight:bold
+    style Machine fill:#FFFF99,stroke:#000080,stroke-width:2px,color:#000080,font-weight:bold
+    style Material fill:#FFFF99,stroke:#000080,stroke-width:2px,color:#000080,font-weight:bold
+    style Method fill:#FFFF99,stroke:#000080,stroke-width:2px,color:#000080,font-weight:bold
 ```
 
 ---
