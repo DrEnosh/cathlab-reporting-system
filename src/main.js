@@ -8,11 +8,14 @@ import { getSettings, saveSetting } from './core/store.js';
 import { renderNewReport } from './views/NewReport.js';
 import { renderReportList } from './views/ReportList.js';
 import { renderAdminDashboard } from './views/AdminDashboard.js';
+import { renderDoctorDashboard } from './views/DoctorDashboard.js';
+import { initAIChatBot } from './components/AIChatBot.js';
 
 // --- Routes ---
 registerRoute('/new', () => renderNewReport());
 registerRoute('/reports', () => renderReportList());
 registerRoute('/admin', () => renderAdminDashboard());
+registerRoute('/doctor', () => renderDoctorDashboard());
 registerRoute('/report/:id', (params) => renderNewReport(params));
 
 // --- Dark Mode ---
@@ -31,7 +34,9 @@ function initDarkMode() {
 }
 
 // --- Init ---
+// --- Init ---
 document.addEventListener('DOMContentLoaded', () => {
     initDarkMode();
     initRouter();
+    initAIChatBot();
 });
