@@ -59,6 +59,18 @@ function renderProcedureSelector(container) {
     <div class="procedure-selector">
       <h2>New Procedure Report</h2>
       <p>Select a procedure to begin the structured report</p>
+      
+      <!-- New OCR Upload Feature -->
+      <div style="margin-bottom: var(--space-8); padding: var(--space-6); background: var(--color-surface-alt); border-radius: var(--radius-lg); border: 2px dashed var(--color-border); max-width: 600px; margin-left: auto; margin-right: auto;">
+        <h3 style="margin-bottom: var(--space-2);"><span style="font-size:1.2rem;">✨</span> Auto-fill with OCR</h3>
+        <p style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--space-4);">Upload a scanned paper report. CathAI will extract the text and fill the digital form for you.</p>
+        <input type="file" id="ocrUploadInput" accept=".pdf,image/*" style="display:none;" />
+        <button class="btn btn-accent" id="ocrUploadBtn">📄 Upload Written Report</button>
+        <div id="ocrLoading" class="hidden" style="margin-top: var(--space-4); color: var(--color-primary); font-size: var(--font-size-sm); font-style: italic;">
+          Scanning document and extracting medical data... ⏳
+        </div>
+      </div>
+
       <div class="procedure-cards">
         ${PROCEDURES.map(p => `
           <div class="procedure-card" data-procedure="${p.code}" id="proc-${p.code}">
@@ -76,6 +88,41 @@ function renderProcedureSelector(container) {
             currentProcedure = card.dataset.procedure;
             renderTemplate(container, { procedure: currentProcedure });
         });
+    });
+
+    // Simulate OCR Upload
+    const ocrBtn = container.querySelector('#ocrUploadBtn');
+    const ocrInput = container.querySelector('#ocrUploadInput');
+    const ocrLoading = container.querySelector('#ocrLoading');
+
+    ocrBtn.addEventListener('click', () => ocrInput.click());
+
+    ocrInput.addEventListener('change', (e) => {
+        if (!e.target.files.length) return;
+
+        ocrBtn.style.display = 'none';
+        ocrLoading.classList.remove('hidden');
+
+        // Simulate a 2-second AI processing delay
+        setTimeout(() => {
+            const simulatedScannedData = {
+                procedure: 'CAG',
+                patientName: 'John Doe (OCR Extracted)',
+                uhid: 'UHID-992837',
+                age: '65',
+                sex: 'Male',
+                indication: 'Stable Angina, abnormal stress test',
+                lm_stenosis: '0',
+                lad_stenosis: '85',
+                lcx_stenosis: '20',
+                rca_stenosis: '95',
+                dominance: 'Right'
+            };
+
+            showToast('OCR Extraction Successful', 'success');
+            currentProcedure = 'CAG';
+            renderTemplate(container, simulatedScannedData);
+        }, 2000);
     });
 }
 
