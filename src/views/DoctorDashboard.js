@@ -2,20 +2,22 @@
 // View: Doctor Dashboard
 // ============================================================
 
-import { getAllReports } from '../core/store.js';
+import { getAllReports, saveReport } from '../core/store.js';
+import { downloadPDF } from '../core/pdf.js';
+import { showToast } from '../core/utils.js';
 
 export function renderDoctorDashboard() {
-    const container = document.getElementById('appMain');
-    const reports = getAllReports();
+  const container = document.getElementById('appMain');
+  const reports = getAllReports();
 
-    // For the presentation, let's assume the current doctor is "Dr. Smith"
-    const doctorName = "Dr. Smith";
-    const myReports = reports.filter(r => r.operator === doctorName || !r.operator); // fallback to all for demo if operator not set
+  // For the presentation, let's assume the current doctor is "Dr. Smith"
+  const doctorName = "Dr. Smith";
+  const myReports = reports.filter(r => r.operator === doctorName || !r.operator); // fallback to all for demo if operator not set
 
-    const pendingSignatures = myReports.filter(r => r.status === 'draft');
-    const completedReports = myReports.filter(r => r.status === 'submitted');
+  const pendingSignatures = myReports.filter(r => r.status === 'pending_approval' || r.status === 'submitted' || r.status === 'draft');
+  const completedReports = myReports.filter(r => r.status === 'approved');
 
-    container.innerHTML = `
+  container.innerHTML = `
     <div style="margin-bottom:var(--space-6);">
       <h2 style="font-size:var(--font-size-xl);font-weight:var(--font-weight-bold);">Welcome back, ${doctorName}</h2>
       <p style="font-size:var(--font-size-sm);color:var(--color-text-muted);">Here is your clinical overview for today.</p>
@@ -66,8 +68,12 @@ export function renderDoctorDashboard() {
                 <td>${r.patientName || 'Unknown Patient'}</td>
                 <td>${r.procedure || '–'}</td>
                 <td>${r.date || '–'}</td>
-                <td>
-                  <button class="btn btn-primary btn-sm finish-draft-btn" data-id="${r.id}">Review & Sign</button>
+                <td style="display:flex; gap: 0.5rem;">
+                  ${r.status === 'draft'
+      ? `<button class="btn btn-primary btn-sm finish-draft-btn" data-id="${r.id}">Review & Sign</button>`
+      : `<button class="btn btn-outline btn-sm view-pdf-btn" data-id="${r.id}">View PDF</button>
+                       <button class="btn btn-primary btn-sm approve-btn" data-id="${r.id}">Approve</button>`
+    }
                 </td>
               </tr>
             `).join('')}
@@ -112,10 +118,31 @@ export function renderDoctorDashboard() {
     </div>
   `;
 
-    // Attach events
-    container.querySelectorAll('.finish-draft-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            window.location.hash = `#/report/${btn.dataset.id}`;
-        });
+  // Attach events
+  container.querySelectorAll('.finish-draft-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      window.location.hash = `#/report/${btn.dataset.id}`;
     });
+  });
+
+  container.querySelectorAll('.view-pdf-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const report = reports.find(r => r.id === btn.dataset.id);
+      if (report) {
+        downloadPDF(report);
+      }
+    });
+  });
+
+  container.querySelectorAll('.approve-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const report = reports.find(r => r.id === btn.dataset.id);
+      if (report) {
+        report.status = 'approved';
+        saveReport(report);
+        showToast('Report Approved successfully!', 'success');
+        renderDoctorDashboard(); // Re-render to update the lists
+      }
+    });
+  });
 }

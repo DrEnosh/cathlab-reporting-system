@@ -5,11 +5,11 @@
 import { getDashboardStats, getAllReports } from '../core/store.js';
 
 export function renderAdminDashboard() {
-    const container = document.getElementById('appMain');
-    const stats = getDashboardStats();
-    const reports = getAllReports();
+  const container = document.getElementById('appMain');
+  const stats = getDashboardStats();
+  const reports = getAllReports();
 
-    container.innerHTML = `
+  container.innerHTML = `
     <div style="margin-bottom:var(--space-6);">
       <h2 style="font-size:var(--font-size-xl);font-weight:var(--font-weight-bold);">Admin Dashboard</h2>
       <p style="font-size:var(--font-size-sm);color:var(--color-text-muted);">Procedure analytics and audit data</p>
@@ -63,26 +63,26 @@ export function renderAdminDashboard() {
     </div>
   `;
 
-    // Filter events
-    container.querySelector('#applyFilter')?.addEventListener('click', () => {
-        const from = container.querySelector('#filterFrom')?.value;
-        const to = container.querySelector('#filterTo')?.value;
-        const filtered = getDashboardStats(from, to);
-        container.querySelector('#statsGrid').innerHTML = renderStatCards(filtered);
-        container.querySelector('#procedureBreakdown').innerHTML = renderProcedureBreakdown(filtered);
-    });
+  // Filter events
+  container.querySelector('#applyFilter')?.addEventListener('click', () => {
+    const from = container.querySelector('#filterFrom')?.value;
+    const to = container.querySelector('#filterTo')?.value;
+    const filtered = getDashboardStats(from, to);
+    container.querySelector('#statsGrid').innerHTML = renderStatCards(filtered);
+    container.querySelector('#procedureBreakdown').innerHTML = renderProcedureBreakdown(filtered);
+  });
 
-    container.querySelector('#clearFilter')?.addEventListener('click', () => {
-        container.querySelector('#filterFrom').value = '';
-        container.querySelector('#filterTo').value = '';
-        const all = getDashboardStats();
-        container.querySelector('#statsGrid').innerHTML = renderStatCards(all);
-        container.querySelector('#procedureBreakdown').innerHTML = renderProcedureBreakdown(all);
-    });
+  container.querySelector('#clearFilter')?.addEventListener('click', () => {
+    container.querySelector('#filterFrom').value = '';
+    container.querySelector('#filterTo').value = '';
+    const all = getDashboardStats();
+    container.querySelector('#statsGrid').innerHTML = renderStatCards(all);
+    container.querySelector('#procedureBreakdown').innerHTML = renderProcedureBreakdown(all);
+  });
 }
 
 function renderStatCards(stats) {
-    return `
+  return `
     <div class="stat-card">
       <div class="stat-icon">📋</div>
       <div class="stat-value">${stats.total}</div>
@@ -104,32 +104,32 @@ function renderStatCards(stats) {
 }
 
 function renderProcedureBreakdown(stats) {
-    const labels = {
-        CAG: 'Coronary Angiography',
-        PCI: 'PCI / Angioplasty',
-        RHC: 'Right Heart Catheterization',
-        TPM: 'Temporary Pacemaker',
-    };
+  const labels = {
+    CAG: 'Coronary Angiography',
+    PCI: 'PCI / Angioplasty',
+    RHC: 'Right Heart Catheterization',
+    TPM: 'Temporary Pacemaker',
+  };
 
-    const colors = {
-        CAG: '#0D6EBF',
-        PCI: '#0A9396',
-        RHC: '#6A4C93',
-        TPM: '#C07A00',
-    };
+  const colors = {
+    CAG: '#0D6EBF',
+    PCI: '#0A9396',
+    RHC: '#6A4C93',
+    TPM: '#C07A00',
+  };
 
-    const total = stats.total || 1;
-    const entries = Object.entries(stats.byProcedure);
+  const total = stats.total || 1;
+  const entries = Object.entries(stats.byProcedure);
 
-    if (entries.length === 0) {
-        return '<p style="color:var(--color-text-muted);padding:var(--space-4);">No data available</p>';
-    }
+  if (entries.length === 0) {
+    return '<p style="color:var(--color-text-muted);padding:var(--space-4);">No data available</p>';
+  }
 
-    return `
+  return `
     <div style="display:flex;flex-direction:column;gap:var(--space-4);padding:var(--space-2) 0;">
       ${entries.map(([code, count]) => {
-        const pct = ((count / total) * 100).toFixed(0);
-        return `
+    const pct = ((count / total) * 100).toFixed(0);
+    return `
           <div>
             <div style="display:flex;justify-content:space-between;margin-bottom:var(--space-1);">
               <span style="font-size:var(--font-size-sm);font-weight:var(--font-weight-medium);">${labels[code] || code}</span>
@@ -140,17 +140,17 @@ function renderProcedureBreakdown(stats) {
             </div>
           </div>
         `;
-    }).join('')}
+  }).join('')}
     </div>
   `;
 }
 
 function renderRecentTable(reports) {
-    if (reports.length === 0) {
-        return '<p style="color:var(--color-text-muted);padding:var(--space-4);">No recent reports</p>';
-    }
+  if (reports.length === 0) {
+    return '<p style="color:var(--color-text-muted);padding:var(--space-4);">No recent reports</p>';
+  }
 
-    return `
+  return `
     <table class="data-table">
       <thead>
         <tr>
@@ -168,7 +168,11 @@ function renderRecentTable(reports) {
             <td>${r.uhid || '–'}</td>
             <td>${r.procedure || '–'}</td>
             <td>${r.date || '–'}</td>
-            <td><span class="alert-badge ${r.status === 'submitted' ? 'normal' : 'info'}">${r.status || 'draft'}</span></td>
+            <td>
+              <span class="alert-badge ${r.status === 'approved' ? 'normal' : ((r.status === 'pending_approval' || r.status === 'submitted') ? 'moderate' : 'info')}">
+                ${r.status === 'approved' ? 'Approved' : ((r.status === 'pending_approval' || r.status === 'submitted') ? 'Pending' : 'Draft')}
+              </span>
+            </td>
           </tr>
         `).join('')}
       </tbody>

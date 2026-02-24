@@ -204,7 +204,7 @@ function submitReport(form, container) {
     }
 
     clearValidationErrors(form);
-    data.status = 'submitted';
+    data.status = 'pending_approval';
     const saved = saveReport(data);
     clearDraft();
     stopAutoSave();
