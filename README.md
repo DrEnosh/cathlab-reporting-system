@@ -26,7 +26,7 @@ The user flow and architecture diagrams are in [`docs/diagrams.md`](docs/diagram
 
 ## Run it
 
-You need Node.js 18 or newer.
+You need a current Node.js (Vite 7 needs 20.19 or newer).
 
 ```bash
 npm install
